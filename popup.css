@@ -88,9 +88,6 @@ body {
   position: relative;
   transition: color 0.15s;
 }
-  justify-content: space-around;
-  gap: 2px;
-}
 
 .nav-item {
   display: flex;

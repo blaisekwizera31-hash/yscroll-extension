@@ -143,4 +143,4 @@ For issues or feature requests, please open an issue on GitHub.
 
 **Get your work done!** 💪
 
-By **Sanyi Diriba**
+By **The Lock-In league**

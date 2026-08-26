@@ -16,7 +16,7 @@
     "webNavigation"
   ],
   "oauth2": {
-    "client_id": "751870394180-4jm4g63livjfhb9e9s0au1hk363n598v.apps.googleusercontent.com",
+    "client_id": "751870394180-vo4hpb8durl749ofsj5guimmfguoj02k.apps.googleusercontent.com",
     "scopes": ["openid", "email", "profile"]
   },
   "optional_host_permissions": ["<all_urls>"],
