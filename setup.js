@@ -38,6 +38,19 @@ async function finishSetup() {
       lastReset: new Date().toDateString(),
       sessions: [],
     },
+    alerts: [],
+    blockedSites: [],
+    focusDurations: [30, 60],
+    notificationSettings: { usageAlerts: true, weeklySummary: true },
+    strictMode: false,
+    stats: {
+      timeSavedToday: 0,
+      timeSavedTotal: 0,
+      blockedAttempts: 0,
+      focusScore: 0,
+      lastStatsReset: new Date().toDateString(),
+    },
+    account: { signedIn: false, email: null, plan: "Local" },
   });
 
   const btn = document.querySelector(".finish-btn");

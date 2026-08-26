@@ -1,6 +1,6 @@
-# YScroll: Stop the Endless Scroll & Get Your Work Done
+# Doomshield: Break the Cycle
 
-A Chrome extension that helps you limit time spent on short-form content platforms like youtubeshorts Shorts, TikTok, LinkedIn Feed, and Instagram.
+A privacy-first Chrome extension that helps you limit time spent on distracting social platforms and return to intentional work.
 
 <img width="1200" height="628" alt="1" src="https://github.com/user-attachments/assets/1534e0b9-a65e-4466-9d64-28c5990e7227" />
 
@@ -25,15 +25,16 @@ A Chrome extension that helps you limit time spent on short-form content platfor
 <img width="1200" height="628" alt="3" src="https://github.com/user-attachments/assets/642d8cfc-49cb-46b4-83eb-2b56c01d53c8" />
 
 ## Installation
-1. Go to Web Store and search for **yscroll** or 
-2. Use this link: https://chromewebstore.google.com/detail/yscroll-stop-the-endless/hlnhamlgmoijbfhilkanhifompndjaho
-3. Everything is easy to setup
+
+1. Open `chrome://extensions`.
+2. Enable Developer mode.
+3. Choose **Load unpacked** and select this repository folder.
 
 ## Usage
 
 ### First Time Setup
 
-1. Click the YScroll extension icon in your Chrome toolbar
+1. Click the Doomshield extension icon in your Chrome toolbar
 2. Click the settings gear icon
 3. Set your desired daily limit (default: 30 minutes)
 4. Set your session limit (default: 5 minutes, optional)
@@ -43,10 +44,11 @@ A Chrome extension that helps you limit time spent on short-form content platfor
 ### Dashboard
 
 The popup dashboard shows:
+
 - **Circular Progress**: Visual representation of time used vs. limit
 - **Time Display**: Minutes watched today / daily limit
 - **Platform Toggles**: Enable/disable individual platforms
-- **Master Toggle**: Turn YScroll on/off completely
+- **Master Shield**: Turn Doomshield protection on/off completely
 
 ### How It Works
 
@@ -65,7 +67,7 @@ The popup dashboard shows:
 
 ## Privacy
 
-YScroll stores all data locally on your device using Chrome's storage API. No data is sent to external servers.
+Doomshield stores all data locally on your device using Chrome's storage API. No data is sent to external servers.
 
 ## Development
 
@@ -108,7 +110,7 @@ YScroll/
 
 ### Extension Not Working
 
-1. Make sure the extension is enabled in the dashboard 
+1. Make sure the extension is enabled in the dashboard
 2. Check that the platform toggle is enabled
 3. Verify the master toggle is ON
 4. Try reloading the page
@@ -133,7 +135,7 @@ MIT License - Feel free to modify and distribute
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## Support 
+## Support
 
 For issues or feature requests, please open an issue on GitHub.
 
@@ -141,4 +143,4 @@ For issues or feature requests, please open an issue on GitHub.
 
 **Get your work done!** 💪
 
-By **Sanyi Diriba** 
+By **Sanyi Diriba**

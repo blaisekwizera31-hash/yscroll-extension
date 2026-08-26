@@ -24,41 +24,45 @@
   /**
    * Creates a blocking overlay with message and home button
    */
-  function createBlockOverlay(message) {
+  async function createBlockOverlay(message) {
+    return DoomshieldShared.createBlockOverlay(message, PLATFORM, "https://www.instagram.com/", cooldownEnd);
     const overlay = document.createElement("div");
-    overlay.id = "yscroll-block-overlay";
+    overlay.id = DoomshieldShared.OVERLAY_ID;
     overlay.style.cssText = `
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: #000000;
+      background: #171A18;
       z-index: 2147483647;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       color: white;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: "Outfit", ui-sans-serif, system-ui, sans-serif;
     `;
 
-    const logoUrl = chrome.runtime.getURL("icons/logo.png");
+    const logoUrl = chrome.runtime.getURL("icons/doomshield-128.png");
     overlay.innerHTML = `
       <div style="text-align: center; max-width: 500px; padding: 40px;">
         <div class="go-home-btn" style="margin-bottom: 20px;">
-          <a href="https://www.instagram.com/" target="_blank" style="display: inline-block; padding: 12px 24px; background: #3b82f6; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; transition: background 0.2s;">
+          <a href="https://www.instagram.com/" target="_blank" style="display: inline-block; padding: 12px 24px; background: #087A2A; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; transition: background 0.2s;">
             Go to Homepage
           </a>
         </div>
         <div style="width: 80px; height: 80px; background: white; border-radius: 20px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;">
-          <img src="${logoUrl}" alt="YScroll" style="width: 100%; height: 100%; object-fit: contain;">
+          <img src="${logoUrl}" alt="Doomshield" style="width: 100%; height: 100%; object-fit: contain;">
         </div>
-        <h1 style="font-size: 36px; margin-bottom: 16px; color: white;">Time's Up!</h1>
+        <h1 style="font-size: 36px; margin-bottom: 16px; color: white;">Doomshield active</h1>
         <p style="font-size: 18px; color: #cbd5e0; margin-bottom: 24px;">${message}</p>
-        <p style="font-size: 14px; color: #9ca3af;">Get back to work and be productive! 💪</p>
+        <p style="font-size: 14px; color: #b9c8bd;">Your focus is protected.</p>
       </div>
     `;
+
+    const settings = await chrome.storage.local.get(["strictMode"]);
+    if (settings.strictMode) overlay.querySelector(".go-home-btn")?.remove();
 
     overlay.addEventListener("keydown", (e) => e.stopPropagation(), true);
     overlay.addEventListener("keyup", (e) => e.stopPropagation(), true);
@@ -89,9 +93,6 @@
     const sessionState = data.sessionState || {};
     const platformState = sessionState[PLATFORM] || {};
 
-    if (platformState.sessionStart) {
-      sessionStart = platformState.sessionStart;
-    }
     if (platformState.cooldownEnd) {
       cooldownEnd = platformState.cooldownEnd;
     }
@@ -137,19 +138,25 @@
     if (!isReelsOrFeed()) {
       removeBlockOverlay();
       sessionStart = null;
-      cooldownEnd = null;
       await saveSessionState();
       return;
     }
 
-    const usage = data.usage || { today: 0 };
+    const usage = DoomshieldShared.getUsageForToday(data.usage);
     const dailyLimit = data.dailyLimit || 30;
     const sessionLimit = data.sessionLimit || 5;
     const coolDown = data.coolDown || 5;
 
-    if (usage.today >= dailyLimit) {
+    if (DoomshieldShared.isDailyLimitReached(usage, dailyLimit)) {
+      const hadCooldown = Boolean(cooldownEnd);
+      cooldownEnd = null;
+      sessionStart = null;
+      lastActiveTimestamp = null;
+      await saveSessionState();
+      if (hadCooldown) removeBlockOverlay();
       showBlockOverlay(
-        `You've reached your daily limit of ${dailyLimit} minutes.`
+        DoomshieldShared.dailyLimitReachedMessage(dailyLimit),
+        "daily"
       );
       return;
     }
@@ -169,13 +176,11 @@
       sessionStart = null;
       lastActiveTimestamp = null;
       await saveSessionState();
+      removeBlockOverlay();
+      return;
     }
 
-    if (!sessionStart) {
-      sessionStart = Date.now();
-      await saveSessionState();
-    }
-
+    if (!sessionStart) return;
     const sessionTime = (Date.now() - sessionStart) / 1000 / 60;
 
     if (sessionTime >= sessionLimit) {
@@ -208,10 +213,10 @@
   /**
    * Shows blocking overlay and pauses all videos
    */
-  function showBlockOverlay(message) {
+  async function showBlockOverlay(message, reason = "session") {
     if (isBlocked) return;
 
-    const existing = document.getElementById("yscroll-block-overlay");
+    const existing = document.getElementById(DoomshieldShared.OVERLAY_ID);
     if (existing) existing.remove();
 
     const videos = document.querySelectorAll("video");
@@ -224,13 +229,14 @@
     document.body.style.overflow = "hidden";
     document.documentElement.style.overflow = "hidden";
 
-    const overlay = createBlockOverlay(message);
+    const overlay = await createBlockOverlay(message);
     document.body.appendChild(overlay);
     isBlocked = true;
 
     chrome.runtime.sendMessage({
       type: "CONTENT_BLOCKED",
       platform: "instagram",
+      reason,
     });
 
     const blockInterval = setInterval(() => {
@@ -250,7 +256,7 @@
   }
 
   function removeBlockOverlay() {
-    const overlay = document.getElementById("yscroll-block-overlay");
+    const overlay = document.getElementById(DoomshieldShared.OVERLAY_ID);
     if (overlay) {
       overlay.remove();
       const wasBlocked = isBlocked;
@@ -303,13 +309,6 @@
       return false;
     }
 
-    const path = window.location.pathname;
-    if (path.includes("/reels/")) {
-      if (!isVideoPlaying()) {
-        return false;
-      }
-    }
-
     return true;
   }
 
@@ -326,11 +325,21 @@
       return;
     }
 
-    const data = await chrome.storage.local.get(["isActive", "platforms"]);
+    const data = await chrome.storage.local.get(["isActive", "platforms", "dailyLimit", "usage"]);
     if (data.isActive === false) {
       return;
     }
     if (!data.platforms || data.platforms.instagram === false) {
+      return;
+    }
+
+    const dailyLimit = data.dailyLimit || 30;
+    if (DoomshieldShared.isDailyLimitReached(data.usage, dailyLimit)) {
+      sessionStart = null;
+      cooldownEnd = null;
+      lastActiveTimestamp = null;
+      await saveSessionState();
+      showBlockOverlay(DoomshieldShared.dailyLimitReachedMessage(dailyLimit), "daily");
       return;
     }
 
@@ -340,7 +349,7 @@
     }
 
     const playing = isVideoPlaying();
-    console.log(`[YScroll Debug] Instagram, Track: ${shouldTrack}, Video: ${playing}`);
+    console.log(`[Doomshield] Instagram, Track: ${shouldTrack}, Video: ${playing}`);
 
     if (!isContextValid()) return;
     chrome.runtime.sendMessage({
@@ -348,7 +357,7 @@
       platform: "instagram",
       url: window.location.href,
       isActive: document.visibilityState === "visible",
-      videoPlaying: playing,
+      videoPlaying: true,
     });
   }
 
@@ -358,6 +367,7 @@
   });
 
   setInterval(checkAndBlock, 2000);
+  window.addEventListener("doomshield-cooldown-complete", checkAndBlock);
 
   if (trackingIntervalId) {
     clearInterval(trackingIntervalId);

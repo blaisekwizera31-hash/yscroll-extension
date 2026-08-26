@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Doomshield">
+  <rect width="128" height="128" rx="28" fill="#effbf0"/>
+  <path d="M64 15 101 28v29c0 27-16 45-37 56C43 102 27 84 27 57V28l37-13Z" fill="#087a2a"/>
+  <path d="M47 38h25c11 0 18 6 18 15 0 7-4 12-11 14l13 22H78L67 69H58v20H47V38Zm11 10v11h10c7 0 10-2 10-6s-3-5-10-5H58Z" fill="#fff"/>
+</svg>

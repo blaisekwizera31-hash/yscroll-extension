@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>YScroll Setup</title>
+  <title>Doomshield Setup</title>
   <link rel="stylesheet" href="setup.css" />
 </head>
 <body>
@@ -11,17 +11,16 @@
     <div class="header">
       <div class="logo-container">
         <div class="logo">
-          <img src="icons/logo.png">
+          <img src="icons/doomshield-128.png" alt="Doomshield">
         </div>
         <div class="brand">
-          <h1>YScroll</h1>
-          <p>Welcome! Let's set up</p>
+          <h1>Doomshield</h1>
+          <p>Break the cycle. Let's set up your shield.</p>
         </div>
       </div>
     </div>
 
     <div class="settings">
-      <!-- Daily Limit -->
       <div class="setting-box">
         <p class="label">Daily Limit</p>
         <div class="value">
@@ -29,13 +28,12 @@
           <span class="unit">minutes</span>
         </div>
         <div class="buttons">
-          <button id="dailyDecrement">−</button>
+          <button id="dailyDecrement" aria-label="Decrease daily limit">−</button>
           <div class="divider"></div>
-          <button id="dailyIncrement">+</button>
+          <button id="dailyIncrement" aria-label="Increase daily limit">+</button>
         </div>
       </div>
 
-      <!-- Session Limit -->
       <div class="setting-box">
         <p class="label">Session Limit</p>
         <div class="value">
@@ -43,13 +41,12 @@
           <span class="unit">minutes</span>
         </div>
         <div class="buttons">
-          <button id="sessionDecrement">−</button>
+          <button id="sessionDecrement" aria-label="Decrease session limit">−</button>
           <div class="divider"></div>
-          <button id="sessionIncrement">+</button>
+          <button id="sessionIncrement" aria-label="Increase session limit">+</button>
         </div>
       </div>
 
-      <!-- Cool Down -->
       <div class="setting-box">
         <p class="label">Cool Down</p>
         <div class="value">
@@ -57,23 +54,23 @@
           <span class="unit">minutes</span>
         </div>
         <div class="buttons">
-          <button id="coolDecrement">−</button>
+          <button id="coolDecrement" aria-label="Decrease cooldown">−</button>
           <div class="divider"></div>
-          <button id="coolIncrement">+</button>
+          <button id="coolIncrement" aria-label="Increase cooldown">+</button>
         </div>
       </div>
     </div>
 
     <p class="info">
       Set your limits to maintain focus and prevent burnout.
-      You can always change these later in settings.
+      You can always change these later in Settings.
     </p>
 
     <button class="finish-btn" id="finishBtn">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <polyline points="20 6 9 17 4 12"></polyline>
       </svg>
-      Get Started
+      Activate Shield
     </button>
   </div>
 
