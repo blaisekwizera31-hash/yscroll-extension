@@ -8,8 +8,8 @@ export default {
 
     try {
       const url = new URL(request.url);
-      if (request.method === "POST" && url.pathname === "/api/auth/google") {
-        return json(await authenticateGoogle(request, env), 200, headers);
+      if (request.method === "POST" && url.pathname === "/api/auth/register") {
+        return json(await registerWithEmail(request, env), 200, headers);
       }
       if (request.method === "POST" && url.pathname === "/api/usage/sync") {
         const user = await requireUser(request, env);
@@ -19,9 +19,9 @@ export default {
         await requireUser(request, env);
         const { results } = await env.DB.prepare(`
           SELECT u.id, u.name, u.avatar_url,
-            SUM(s.time_saved_seconds) AS time_saved_seconds
-          FROM usage_stats s
-          JOIN users u ON u.id = s.user_id
+            COALESCE(SUM(s.time_saved_seconds), 0) AS time_saved_seconds
+          FROM users u
+          LEFT JOIN usage_stats s ON s.user_id = u.id
           GROUP BY u.id, u.name, u.avatar_url
           ORDER BY time_saved_seconds DESC
           LIMIT 50
@@ -36,29 +36,30 @@ export default {
   },
 };
 
-async function authenticateGoogle(request, env) {
+async function registerWithEmail(request, env) {
   const body = await request.json();
-  if (!body.credential) throw httpError("Google credential is required.", 400);
-  const response = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
-    headers: { Authorization: `Bearer ${body.credential}` },
-  });
-  const googleUser = await response.json();
-  if (!response.ok || !googleUser.sub || !googleUser.email) {
-    throw httpError("Google credential could not be verified.", 401);
+  const email = String(body.email || "").trim().toLowerCase();
+  const name = String(body.username || "").trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
+    throw httpError("Enter a valid email address.", 400);
+  }
+  if (name.length < 2 || name.length > 50) {
+    throw httpError("Username must be between 2 and 50 characters.", 400);
   }
 
   await env.DB.prepare(`
     INSERT INTO users (id, email, name, avatar_url)
     VALUES (?, ?, ?, ?)
-    ON CONFLICT(id) DO UPDATE SET
-      email = excluded.email,
-      name = excluded.name,
-      avatar_url = excluded.avatar_url
-  `).bind(googleUser.sub, googleUser.email, googleUser.name || googleUser.email, googleUser.picture || null).run();
+    ON CONFLICT(email) DO UPDATE SET name = excluded.name
+  `).bind(crypto.randomUUID(), email, name, null).run();
+
+  const user = await env.DB.prepare(
+    "SELECT id, email, name, avatar_url FROM users WHERE email = ?"
+  ).bind(email).first();
 
   return {
-    session_token: await signJwt({ sub: googleUser.sub, email: googleUser.email }, env.JWT_SECRET),
-    user: { id: googleUser.sub, email: googleUser.email, name: googleUser.name || googleUser.email, avatar_url: googleUser.picture || null },
+    session_token: await signJwt({ sub: user.id, email: user.email }, env.JWT_SECRET),
+    user,
   };
 }
 

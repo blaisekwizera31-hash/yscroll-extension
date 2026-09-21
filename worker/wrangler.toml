@@ -1,0 +1,10 @@
+name = "doomshield"
+main = "src/index.js"
+compatibility_date = "2024-12-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "doomshield-db"
+database_id = "753929c7-2521-41eb-9ac0-c741d0e6331b"
+
+[vars]

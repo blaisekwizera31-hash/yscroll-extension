@@ -27,7 +27,7 @@ wrangler deploy
 
 The extension expects the deployed API at `https://doomshield.pages.dev`:
 
-- `POST /api/auth/google`
+- `POST /api/auth/register`
 - `POST /api/usage/sync`
 - `GET /api/leaderboard`
 

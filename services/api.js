@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://doomshield.pages.dev";
+const API_BASE_URL = "https://doomshield.blaisekwizera31.workers.dev";
 
 export async function apiRequest(path, options = {}) {
   const response = await fetch(`${API_BASE_URL}${path}`, {
@@ -13,7 +13,10 @@ export async function apiRequest(path, options = {}) {
     ? await response.json().catch(() => ({}))
     : {};
   if (!contentType.includes("application/json")) {
-    throw new Error("The Doomshield API is not deployed at the configured address.");
+    throw new Error(
+      `The server at ${API_BASE_URL} returned an unexpected response (${response.status}). ` +
+      "The backend may not be deployed yet."
+    );
   }
   if (!response.ok) {
     throw new Error(body.error || `Request failed (${response.status}).`);

@@ -138,7 +138,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => {
-  if (sender.url && new URL(sender.url).origin !== "https://doomshield.pages.dev") {
+  const allowedOrigins = ["https://doomshield.pages.dev", "https://doomshield.blaisekwizera31.workers.dev"];
+  if (sender.url && !allowedOrigins.includes(new URL(sender.url).origin)) {
     return;
   }
 
@@ -232,7 +233,7 @@ async function syncUsageToApi() {
     const scrolledDelta = Math.max(0, scrolledToday - (stats.syncedScrolledTimeToday || 0));
     if (focusedDelta <= 0 && scrolledDelta <= 0) return;
 
-    const response = await fetch("https://doomshield.pages.dev/api/usage/sync", {
+    const response = await fetch("https://doomshield.blaisekwizera31.workers.dev/api/usage/sync", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

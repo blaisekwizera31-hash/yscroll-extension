@@ -790,6 +790,38 @@ body {
   opacity: 0.9;
 }
 
+.email-signin-form {
+  display: grid;
+  gap: 8px;
+  text-align: left;
+}
+
+.email-signin-form label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gray);
+}
+
+.email-signin-form input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--white);
+  color: var(--dark);
+  font: inherit;
+}
+
+.email-signin-form input:focus {
+  outline: 2px solid var(--green);
+  outline-offset: 1px;
+}
+
+.email-signin-form .signin-google {
+  margin-top: 8px;
+}
+
 .signin-info-card {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);

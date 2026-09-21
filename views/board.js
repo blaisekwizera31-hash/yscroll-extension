@@ -28,10 +28,14 @@ export async function renderBoard(container) {
       ? renderRows(data.entries)
       : '<div class="empty-state">No leaderboard entries yet.</div>';
   } catch (error) {
+    const isApiDown = error.message.includes("not deployed") || error.message.includes("unexpected response");
     rows.innerHTML = `
       <div class="empty-state">
         <p>Could not load the leaderboard.</p>
-        <p class="alert-card-desc">${escapeHtml(error.message)}</p>
+        <p class="alert-card-desc">${isApiDown
+          ? "The leaderboard service is currently unavailable. Please try again later."
+          : escapeHtml(error.message)
+        }</p>
         <button class="btn btn-outline" id="retryLeaderboard">Retry</button>
       </div>
     `;

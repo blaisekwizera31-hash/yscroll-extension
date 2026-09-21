@@ -10,15 +10,10 @@
     "idle",
     "notifications",
     "scripting",
-    "identity",
     "declarativeNetRequest",
     "declarativeNetRequestWithHostAccess",
     "webNavigation"
   ],
-  "oauth2": {
-    "client_id": "751870394180-vo4hpb8durl749ofsj5guimmfguoj02k.apps.googleusercontent.com",
-    "scopes": ["openid", "email", "profile"]
-  },
   "optional_host_permissions": ["<all_urls>"],
   "host_permissions": [
     "*://*.youtube.com/*",
@@ -27,8 +22,8 @@
     "*://*.instagram.com/*",
     "*://*.facebook.com/*",
     "*://*.x.com/*",
-    "https://www.googleapis.com/*",
-    "https://doomshield.pages.dev/*"
+    "https://doomshield.pages.dev/*",
+    "https://doomshield.blaisekwizera31.workers.dev/*"
   ],
   "action": {
     "default_popup": "popup.html",
@@ -47,7 +42,7 @@
     "service_worker": "background.js"
   },
   "externally_connectable": {
-    "matches": ["https://doomshield.pages.dev/*"]
+    "matches": ["https://doomshield.pages.dev/*", "https://doomshield.blaisekwizera31.workers.dev/*"]
   },
   "content_scripts": [
     {
