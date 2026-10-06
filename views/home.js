@@ -1,7 +1,7 @@
 /**
  * Home View
  */
-import { getDashboardStats, formatDuration } from "../services/stats.js";
+import { getDashboardStats, formatDuration, formatHoursMinutes } from "../services/stats.js";
 import { getAlerts, formatAlertTime, getAlertIcon } from "../services/alerts.js";
 import { getIcon, escapeHtml } from "../components/icons.js";
 import { setLocal } from "../services/storage.js";
@@ -27,18 +27,49 @@ export async function renderHome(container, { navigate }) {
       ? "limit"
       : "";
 
+  // Progress bar percentage for daily usage
+  const usagePct = Math.min(100, Math.round((stats.usageToday / stats.dailyLimit) * 100));
+  const progressColor =
+    usagePct >= 100 ? "#ef4444" : usagePct >= 80 ? "#f59e0b" : "rgba(255,255,255,0.9)";
+
+  // "Time on social" — the real measured number
+  const usageFormatted = formatDuration(stats.usageToday);
+  // "Time focused" — time the user was active but NOT on social platforms
+  const focusedFormatted = formatHoursMinutes(stats.focusedTimeToday);
+
   container.innerHTML = `
     <div class="card card-green">
       <div class="card-header">
         <span class="card-label">${escapeHtml(statusLabel)}</span>
+        <span style="font-size:11px;font-weight:600;opacity:0.8;">Focus Score: ${stats.focusScore}/100</span>
       </div>
-      <div class="card-timer" id="homeTimer">${formatDuration(stats.timeSavedToday)}</div>
-      <p class="card-desc">Time spent away from enabled social platforms today.</p>
+      <div class="card-timer" id="homeTimer">${usageFormatted}</div>
+      <p class="card-desc" style="margin-bottom:10px;">Social media used today — ${Math.ceil(stats.usageToday)} / ${stats.dailyLimit} min</p>
+
+      <div style="background:rgba(255,255,255,0.18);border-radius:999px;height:6px;margin-bottom:14px;overflow:hidden;">
+        <div style="height:100%;width:${usagePct}%;background:${progressColor};border-radius:999px;transition:width 0.4s ease;"></div>
+      </div>
+
+      <div style="display:flex;gap:12px;margin-bottom:14px;">
+        <div style="flex:1;background:rgba(255,255,255,0.12);border-radius:12px;padding:10px 12px;text-align:center;">
+          <div style="font-size:18px;font-weight:700;">${focusedFormatted}</div>
+          <div style="font-size:10px;opacity:0.8;margin-top:2px;">Focused today</div>
+        </div>
+        <div style="flex:1;background:rgba(255,255,255,0.12);border-radius:12px;padding:10px 12px;text-align:center;">
+          <div style="font-size:18px;font-weight:700;">${formatDuration(stats.timeSavedToday)}</div>
+          <div style="font-size:10px;opacity:0.8;margin-top:2px;">Time saved</div>
+        </div>
+        <div style="flex:1;background:rgba(255,255,255,0.12);border-radius:12px;padding:10px 12px;text-align:center;">
+          <div style="font-size:18px;font-weight:700;">${stats.blockedAttempts}</div>
+          <div style="font-size:10px;opacity:0.8;margin-top:2px;">Blocks today</div>
+        </div>
+      </div>
+
       <div class="btn-row">
         <button class="btn btn-dark" id="pauseShieldBtn">
           ${stats.isActive ? "Pause Shield" : "Resume Shield"}
         </button>
-        <button class="btn btn-outline" id="shareMilestoneBtn">Share Milestone</button>
+        <button class="btn btn-outline" id="shareMilestoneBtn">Share</button>
       </div>
     </div>
 
@@ -50,8 +81,9 @@ export async function renderHome(container, { navigate }) {
         <div class="shield-desc">${getShieldDescription(stats.shieldStatus)}</div>
       </div>
       <p class="card-desc" style="margin-top:10px;margin-bottom:0;">
-        Usage: ${Math.ceil(stats.usageToday)} / ${stats.dailyLimit} min today
-        · Focus Score: ${stats.focusScore}
+        ${stats.limitReached
+          ? "Daily limit reached. Come back tomorrow."
+          : `${Math.max(0, stats.dailyLimit - Math.ceil(stats.usageToday))} min remaining today`}
       </p>
     </div>
 
@@ -126,7 +158,7 @@ function renderAlertsPreview(alerts) {
 }
 
 async function shareMilestone(stats) {
-  const text = `I've spent ${formatDuration(stats.focusedTimeToday || 0)} away from social media today with Doomshield! Focus Score: ${stats.focusScore}/100.`;
+  const text = `I've only spent ${formatDuration(stats.usageToday || 0)} on social media today — and saved ${formatDuration(stats.timeSavedToday || 0)} with Doomshield! Focus Score: ${stats.focusScore}/100.`;
 
   if (navigator.share) {
     try {
