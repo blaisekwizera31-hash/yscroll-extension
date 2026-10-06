@@ -68,6 +68,13 @@
       return;
     }
 
+    if (!isFeedPage()) {
+      removeBlockOverlay();
+      sessionStart = null;
+      await saveSessionState();
+      return;
+    }
+
     const usage = DoomshieldShared.getUsageForToday(data.usage);
     const dailyLimit = data.dailyLimit || 30;
     const sessionLimit = data.sessionLimit || 5;
@@ -219,11 +226,26 @@
     return false;
   }
 
+  function isFeedPage() {
+    const path = window.location.pathname;
+    return (
+      path === "/" ||
+      path.startsWith("/foryou") ||
+      path.startsWith("/following") ||
+      path.startsWith("/live") ||
+      path.startsWith("/@") === false && path.split("/").length <= 2
+    );
+  }
+
   /**
    * Determines if time tracking should occur
    */
   function shouldTrackTime() {
     if (isBlocked || (cooldownEnd && Date.now() < cooldownEnd)) {
+      return false;
+    }
+
+    if (!isFeedPage()) {
       return false;
     }
 
@@ -269,9 +291,6 @@
       sessionStart = Date.now();
       await saveSessionState();
     }
-
-    const playing = isVideoPlaying();
-    console.log(`[Doomshield] TikTok, Track: ${shouldTrack}, Video: ${playing}`);
 
     if (!isContextValid()) return;
     chrome.runtime.sendMessage({

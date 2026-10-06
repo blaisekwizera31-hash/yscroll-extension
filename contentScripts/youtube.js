@@ -295,9 +295,6 @@
       await saveSessionState();
     }
 
-    const playing = isVideoPlaying();
-    console.log(`[Doomshield] YouTube, Track: ${shouldTrack}, Video: ${playing}`);
-
     if (!isContextValid()) return;
     chrome.runtime.sendMessage({
       type: "TRACK_TIME",

@@ -60,7 +60,7 @@ document.getElementById("dailyDecrement").addEventListener("click", () => {
 });
 
 document.getElementById("dailyIncrement").addEventListener("click", () => {
-  dailyLimit = Math.min(90, dailyLimit + 5);
+  dailyLimit = Math.min(120, dailyLimit + 5);
   updateDisplay();
 });
 

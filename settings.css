@@ -122,12 +122,6 @@ body {
   color: #ffffff;
 }
 
-  background: linear-gradient(180deg, #202922 0%, #171A18 100%);
-  border-radius: 18px;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
-  border-radius: 22px;
-  border-radius: 18px;
-  border-radius: 14px;
 .buttons {
   display: flex;
   justify-content: center;

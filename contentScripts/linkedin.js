@@ -27,65 +27,6 @@
    */
   async function createBlockOverlay(message) {
     return DoomshieldShared.createBlockOverlay(message, PLATFORM, "https://www.linkedin.com/feed/", cooldownEnd);
-    const overlay = document.createElement("div");
-    overlay.id = DoomshieldShared.OVERLAY_ID;
-    overlay.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #171A18;
-      z-index: 2147483647;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-family: "Outfit", ui-sans-serif, system-ui, sans-serif;
-    `;
-
-    const logoUrl = chrome.runtime.getURL("icons/doomshield-128.png");
-    overlay.innerHTML = `
-      <div style="text-align: center; max-width: 500px; padding: 40px;">
-        <div class="go-home-btn" style="margin-bottom: 20px;">
-          <a href="https://www.linkedin.com/feed" target="_blank" style="display: inline-block; padding: 12px 24px; background: #087A2A; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; transition: background 0.2s;">
-            Go to Homepage
-          </a>
-        </div>
-       <div style="width: 80px; height: 80px; background: white; border-radius: 20px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;">
-            <img src="${logoUrl}" alt="Doomshield" style="width: 100%; height: 100%; object-fit: contain;">
-        </div>
-        <h1 style="font-size: 36px; margin-bottom: 16px; color: white;">Doomshield active</h1>
-        <p style="font-size: 18px; color: #cbd5e0; margin-bottom: 24px;">${message}</p>
-        <p style="font-size: 14px; color: #b9c8bd;">Your focus is protected.</p>
-      </div>
-    `;
-
-    const settings = await chrome.storage.local.get(["strictMode"]);
-    if (settings.strictMode) overlay.querySelector(".go-home-btn")?.remove();
-
-    overlay.addEventListener("keydown", (e) => e.stopPropagation(), true);
-    overlay.addEventListener("keyup", (e) => e.stopPropagation(), true);
-    overlay.addEventListener("keypress", (e) => e.stopPropagation(), true);
-    overlay.addEventListener(
-      "wheel",
-      (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-      },
-      { passive: false, capture: true }
-    );
-    overlay.addEventListener(
-      "scroll",
-      (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-      },
-      { passive: false, capture: true }
-    );
-
-    return overlay;
   }
 
   async function loadSessionState() {
@@ -349,9 +290,6 @@
       sessionStart = Date.now();
       await saveSessionState();
     }
-
-    const playing = isVideoPlaying();
-    console.log(`[Doomshield] LinkedIn, Track: ${shouldTrack}, Video: ${playing}`);
 
     if (!isContextValid()) return;
     chrome.runtime.sendMessage({
