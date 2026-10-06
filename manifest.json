@@ -3,18 +3,26 @@
   "name": "Doomshield: Break the Cycle",
   "version": "2.0.0",
   "description": "Reclaim your time and focus. Doomshield helps you navigate away from endless scrolling and back to intentional living.",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzwLVqypjgOKgTcEkOgRutLcnpDt5GHi841XwlCljwloK78QCosbvzAwdj9Gg+ZYGldqX6qhEH9oURjq5++kkA39CnG0bJF28AXqEmbUNodrLAWVUSeLAAaCU9CkYaYcVx0y+DRWJYeMvzbsIombE8/xvttl0gxydL09W4nN6yfHZ+Pza8ynAzvxbhn2RZMpIA0xNZiXiYe883k7/0fc1/4dtExZpDo4TRpWprq3akQbMpGxUl2ptnT4zYduzV31Ud12u/9yuvL9dGf9lZW6LszrkWsJO1WLX4JwJ7B0qdsWr+N69AQI4f3nwzsdAmO8o31F8GD4zpEz1DLu98Tv1ZwIDAQAB",
+
   "permissions": [
     "storage",
-    "tabs",
-    "alarms",
-    "idle",
-    "notifications",
-    "scripting",
-    "declarativeNetRequest",
-    "declarativeNetRequestWithHostAccess",
-    "webNavigation"
+    "identity"
   ],
-  "optional_host_permissions": ["<all_urls>"],
+
+  "oauth2": {
+    "client_id": "543225960170-n5709580num1b32qd0hguspjg39o6s0t.apps.googleusercontent.com",
+    "scopes": [
+      "openid",
+      "email",
+      "profile"
+    ]
+  },
+
+  "optional_host_permissions": [
+    "<all_urls>"
+  ],
+
   "host_permissions": [
     "*://*.youtube.com/*",
     "*://*.tiktok.com/*",
@@ -22,9 +30,11 @@
     "*://*.instagram.com/*",
     "*://*.facebook.com/*",
     "*://*.x.com/*",
+    "https://www.googleapis.com/*",
     "https://doomshield.pages.dev/*",
     "https://doomshield.blaisekwizera31.workers.dev/*"
   ],
+
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
@@ -33,60 +43,90 @@
       "128": "icons/doomshield-128.png"
     }
   },
+
   "icons": {
     "16": "icons/doomshield-16.png",
     "48": "icons/doomshield-48.png",
     "128": "icons/doomshield-128.png"
   },
+
   "background": {
     "service_worker": "background.js"
   },
+
   "externally_connectable": {
-    "matches": ["https://doomshield.pages.dev/*", "https://doomshield.blaisekwizera31.workers.dev/*"]
+    "matches": [
+      "https://doomshield.pages.dev/*",
+      "https://doomshield.blaisekwizera31.workers.dev/*"
+    ]
   },
+
   "content_scripts": [
     {
       "matches": ["*://*.youtube.com/*"],
-      "js": ["contentScripts/shared.js", "contentScripts/youtube.js"],
+      "js": [
+        "contentScripts/shared.js",
+        "contentScripts/youtube.js"
+      ],
       "run_at": "document_end"
     },
     {
       "matches": ["*://*.tiktok.com/*"],
-      "js": ["contentScripts/shared.js", "contentScripts/tiktok.js"],
+      "js": [
+        "contentScripts/shared.js",
+        "contentScripts/tiktok.js"
+      ],
       "run_at": "document_end"
     },
     {
       "matches": ["*://*.linkedin.com/*"],
-      "js": ["contentScripts/shared.js", "contentScripts/linkedin.js"],
+      "js": [
+        "contentScripts/shared.js",
+        "contentScripts/linkedin.js"
+      ],
       "run_at": "document_end"
     },
     {
       "matches": ["*://*.instagram.com/*"],
-      "js": ["contentScripts/shared.js", "contentScripts/instagram.js"],
+      "js": [
+        "contentScripts/shared.js",
+        "contentScripts/instagram.js"
+      ],
       "run_at": "document_end"
     },
     {
       "matches": ["*://*.facebook.com/*"],
-      "js": ["contentScripts/shared.js", "contentScripts/facebook.js"],
+      "js": [
+        "contentScripts/shared.js",
+        "contentScripts/facebook.js"
+      ],
       "run_at": "document_end"
     },
     {
       "matches": ["*://*.x.com/*"],
-      "js": ["contentScripts/shared.js", "contentScripts/x.js"],
+      "js": [
+        "contentScripts/shared.js",
+        "contentScripts/x.js"
+      ],
       "run_at": "document_end"
     }
   ],
+
   "web_accessible_resources": [
     {
-      "resources": ["blocked.html", "blocked.css", "icons/*", "fonts/*.ttf"],
+      "resources": [
+        "blocked.html",
+        "blocked.css",
+        "icons/*",
+        "fonts/*.ttf"
+      ],
       "matches": [
         "*://*.youtube.com/*",
         "*://*.tiktok.com/*",
         "*://*.linkedin.com/*",
         "*://*.instagram.com/*",
         "*://*.facebook.com/*",
-        "*://*.x.com/*",
-        "<all_urls>"
+        "*://*.x.com/*"
       ]
     }
   ]

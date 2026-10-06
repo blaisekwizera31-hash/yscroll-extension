@@ -21,13 +21,13 @@ wrangler secret put JWT_SECRET
 Apply the migration and deploy from the Worker project directory:
 
 ```powershell
-wrangler d1 migrations apply YOUR_EXISTING_DATABASE_NAME --remote
+wrangler d1 migrations apply doomshield-db --remote
 wrangler deploy
 ```
 
 The extension expects the deployed API at `https://doomshield.pages.dev`:
 
-- `POST /api/auth/register`
+- `POST /api/auth/google`
 - `POST /api/usage/sync`
 - `GET /api/leaderboard`
 

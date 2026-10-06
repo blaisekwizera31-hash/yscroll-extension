@@ -769,6 +769,12 @@ body {
   margin-bottom: 28px;
 }
 
+.signup-heading {
+  font-size: 16px;
+  font-weight: 700;
+  margin: -10px 0 18px;
+}
+
 .signin-google {
   width: 100%;
   padding: 14px;
@@ -788,6 +794,24 @@ body {
 
 .signin-google:hover {
   opacity: 0.9;
+}
+
+.signin-google:disabled {
+  cursor: wait;
+  opacity: 0.75;
+}
+
+.signin-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: var(--white);
+  border-radius: 50%;
+  animation: signin-spin 700ms linear infinite;
+}
+
+@keyframes signin-spin {
+  to { transform: rotate(360deg); }
 }
 
 .email-signin-form {
